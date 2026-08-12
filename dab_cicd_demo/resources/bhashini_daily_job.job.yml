@@ -1,0 +1,81 @@
+resources:
+  jobs:
+    bhashini_daily_job:
+      name: Bhashini_Daily_Job
+
+      tasks:
+
+        # ============================================
+        # Bronze Task
+        # ============================================
+        - task_key: bronze_ingestion
+
+          spark_python_task:
+            python_file: ../src/bhashini/bronze.py
+
+          environment_key: default
+
+          max_retries: 2
+          min_retry_interval_millis: 30000
+
+
+        # ============================================
+        # Silver Task
+        # ============================================
+        - task_key: silver_transformation
+
+          depends_on:
+            - task_key: bronze_ingestion
+
+          spark_python_task:
+            python_file: ../src/bhashini/silver.py
+
+          environment_key: default
+
+          max_retries: 2
+          min_retry_interval_millis: 30000
+
+
+        # ============================================
+        # Gold Task
+        # ============================================
+        - task_key: gold_transformation
+
+          depends_on:
+            - task_key: silver_transformation
+
+          spark_python_task:
+            python_file: ../src/bhashini/gold.py
+
+          environment_key: default
+
+          max_retries: 2
+          min_retry_interval_millis: 30000
+
+
+        # ============================================
+        # Validation Task
+        # ============================================
+        - task_key: validation
+
+          depends_on:
+            - task_key: gold_transformation
+
+          spark_python_task:
+            python_file: ../src/bhashini/validation.py
+
+          environment_key: default
+
+          max_retries: 1
+          min_retry_interval_millis: 30000
+
+
+      # ============================================
+      # Serverless Environment
+      # ============================================
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "2"
+            dependencies:
+              - requests
