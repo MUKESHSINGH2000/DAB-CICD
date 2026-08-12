@@ -3,6 +3,14 @@ resources:
     bhashini_daily_job:
       name: Bhashini_Daily_Job
 
+      # ============================================
+      # Daily Schedule - 11:00 AM IST
+      # ============================================
+      schedule:
+        quartz_cron_expression: "0 0 11 * * ?"
+        timezone_id: "Asia/Kolkata"
+        pause_status: UNPAUSED
+
       tasks:
 
         # ============================================
@@ -17,7 +25,6 @@ resources:
 
           max_retries: 2
           min_retry_interval_millis: 30000
-
 
         # ============================================
         # Silver Task
@@ -35,7 +42,6 @@ resources:
           max_retries: 2
           min_retry_interval_millis: 30000
 
-
         # ============================================
         # Gold Task
         # ============================================
@@ -52,7 +58,6 @@ resources:
           max_retries: 2
           min_retry_interval_millis: 30000
 
-
         # ============================================
         # Validation Task
         # ============================================
@@ -68,7 +73,6 @@ resources:
 
           max_retries: 1
           min_retry_interval_millis: 30000
-
 
       # ============================================
       # Serverless Environment
